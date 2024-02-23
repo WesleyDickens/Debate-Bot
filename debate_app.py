@@ -51,9 +51,9 @@ if st.button('Start Debate'):
     input_text = topic
     debate_transcript = ""
 
-    for i in range(10):  # Adjust the range for longer or shorter debates
+    for i in range(3):  # Adjust the range for longer or shorter debates
         pro_response, con_response = conversation(input_text=input_text, original_context=original_input)
-        debate_transcript += f"\n Pro: {pro_response}\n Con: {con_response}\n "
+        debate_transcript += f"\nPro: {pro_response}\nCon: {con_response}\n"
         input_text = con_response  # Use the last response as input for the next round
         # Update the placeholder with the latest transcript after each response
         transcript_placeholder.text_area("Debate Transcript", value=debate_transcript, height=300)
