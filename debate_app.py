@@ -44,7 +44,7 @@ def conversation(input_text, original_context):
 
     )
 
-    return bot_1_response["choices"][0]["message"]["content"], bot_2_response["choices"][0]["message"]["content"]
+    return bot_1_response.choices[0].message.content, bot_2_response.choices[0].message.content
 
 # Streamlit UI
 st.title('AI Debate Bot')
