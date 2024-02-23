@@ -1,21 +1,16 @@
 import streamlit as st
 from openai import OpenAI
-# import os
-# from dotenv import load_dotenv
 import time
-
-# Load environment variables for API keys
-# load_dotenv()
 
 api_key_1 = st.secrets["api_key_1"]
 api_key_2 = st.secrets["api_key_2"]
 
 # Initialize the OpenAI clients
-client1 = OpenAI(api_key = api_key_1)
-client2 = OpenAI(api_key = api_key_2)
+client1 = OpenAI(api_key=api_key_1)
+client2 = OpenAI(api_key=api_key_2)
 
 # Function to manage the conversation between two bots
-def conversation(input_text, original_context):
+def conversation(input_text, original_context, transcript_placeholder):
     if input_text != original_context:
         message = original_context + " " + input_text
     else:
@@ -25,30 +20,32 @@ def conversation(input_text, original_context):
     bot_1_response = client1.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content":"You are a debate bot. Your role is to take the given topic and take the Pro stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
+            {"role": "system", "content": "You are a debate bot. Your role is to take the given topic and take the Pro stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
             {"role": "assistant", "content": message}
         ],
         presence_penalty=0.5,
-
     )
+    # Update the transcript for Pro response
+    transcript_placeholder.text(f"Pro: {bot_1_response.choices[0].message.content}")
+    time.sleep(1)  # Simulate real-time response
 
     # Against Bot (Con stance)
-    message = original_context + bot_1_response.choices[0].message.content
+    message = original_context + " " + bot_1_response.choices[0].message.content  # Ensure the message is appended correctly
     bot_2_response = client2.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content":"You are a debate bot. Your role is to take the given topic and take the Con (or against) stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
+            {"role": "system", "content": "You are a debate bot. Your role is to take the given topic and take the Con (or against) stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
             {"role": "user", "content": message}
         ],
         presence_penalty=0.5,
-
     )
+    # Update the transcript for Con response, appending to previous messages
+    transcript_placeholder.text(f"Con: {bot_2_response.choices[0].message.content}")
 
     return bot_1_response.choices[0].message.content, bot_2_response.choices[0].message.content
 
-# Streamlit UI
+# Streamlit UI setup
 st.title('AI Debate Bot')
-
 topic = st.text_input('Enter a debate topic:', '')
 
 if st.button('Start Debate'):
