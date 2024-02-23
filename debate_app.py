@@ -33,7 +33,7 @@ def conversation(input_text, original_context):
     )
 
     # Against Bot (Con stance)
-    message = original_context + bot_1_response["choices"][0]["message"]["content"]
+    message = original_context + bot_1_response.choices[0].message.content
     bot_2_response = client2.chat.completions.create(
         model="gpt-4",
         messages=[
