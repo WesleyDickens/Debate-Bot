@@ -22,7 +22,6 @@ def conversation(input_text, original_context):
         message = input_text
 
     # For Bot (Pro stance)
-    openai.api_key = api_key_1
     bot_1_response = client1.chat.completions.create(
         model="gpt-4",
         messages=[
@@ -34,7 +33,6 @@ def conversation(input_text, original_context):
     )
 
     # Against Bot (Con stance)
-    openai.api_key = api_key_2
     message = original_context + bot_1_response["choices"][0]["message"]["content"]
     bot_2_response = client2.chat.completions.create(
         model="gpt-4",
