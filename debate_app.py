@@ -51,18 +51,16 @@ st.title('AI Debate Bot')
 
 topic = st.text_input('Enter a debate topic:', '')
 
-transcript_placeholder = st.empty()
-
 if st.button('Start Debate'):
     original_input = topic
     input_text = topic
     debate_transcript = ""
+    transcript_placeholder = st.empty()  # Placeholder for displaying the conversation in real-time
 
     for i in range(10):  # Adjust the range for longer or shorter debates
-        pro_response, con_response = conversation(input_text=input_text, original_context=original_input)
+        pro_response, con_response = conversation(input_text=input_text, original_context=original_input, transcript_placeholder=transcript_placeholder)
         debate_transcript += f"\nPro: {pro_response}\nCon: {con_response}\n"
         input_text = con_response  # Use the last response as input for the next round
+        # Update the complete transcript after each round
         transcript_placeholder.text_area("Debate Transcript", value=debate_transcript, height=300)
         time.sleep(1)  # To simulate real-time response, adjust as needed
-
-    st.text_area("Debate Transcript", value=debate_transcript, height=300)
