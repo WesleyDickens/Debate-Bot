@@ -10,7 +10,7 @@ client1 = OpenAI(api_key=api_key_1)
 client2 = OpenAI(api_key=api_key_2)
 
 # Function to manage the conversation between two bots
-def conversation(input_text, original_context):
+def conversation(input_text, original_context,tone):
     if input_text != original_context:
         message = original_context + " " + input_text
     else:
@@ -20,7 +20,7 @@ def conversation(input_text, original_context):
     bot_1_response = client1.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are a debate bot. Your role is to take the given topic and take the Pro stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
+            {"role": "system", "content": f"You are a debate bot. Your role is to take the given topic and take the Pro stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. {tone}."},
             {"role": "assistant", "content": message}
         ],
         presence_penalty=0.5,
@@ -31,7 +31,7 @@ def conversation(input_text, original_context):
     bot_2_response = client2.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are a debate bot. Your role is to take the given topic and take the Con (or against) stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
+            {"role": "system", "content": f"You are a debate bot. Your role is to take the given topic and take the Con (or against) stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. {tone}"},
             {"role": "user", "content": message}
         ],
         presence_penalty=0.5,
@@ -43,6 +43,11 @@ def conversation(input_text, original_context):
 st.title('AI Debate Bot')
 topic = st.text_input('Enter a debate topic:', '')
 
+tone = st.radio(
+    "Keep it clean or fight dirty?",
+    ["Be Nice", "Be Mean"],
+    )
+
 # Placeholder for real-time transcript updates
 transcript_placeholder = st.empty()
 
@@ -52,7 +57,7 @@ if st.button('Start Debate'):
     debate_transcript = ""
 
     for i in range(10):  # Adjust the range for longer or shorter debates
-        pro_response, con_response = conversation(input_text=input_text, original_context=original_input)
+        pro_response, con_response = conversation(input_text=input_text, original_context=original_input,tone)
         debate_transcript += f"\nPro: {pro_response}\n\nCon: {con_response}\n"
         input_text = con_response  # Use the last response as input for the next round
         # Update the placeholder with the latest transcript after each response
