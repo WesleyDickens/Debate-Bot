@@ -56,5 +56,5 @@ if st.button('Start Debate'):
         debate_transcript += f"\nPro: {pro_response}\nCon: {con_response}\n"
         input_text = con_response  # Use the last response as input for the next round
         # Update the placeholder with the latest transcript after each response
-        transcript_placeholder.text_area("Debate Transcript", value=debate_transcript, height=300)
+        transcript_placeholder.text_area("Debate Transcript", value=debate_transcript, height=3000)
         time.sleep(1)  # To simulate real-time response, adjust as needed
