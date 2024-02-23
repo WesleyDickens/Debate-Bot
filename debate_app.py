@@ -7,16 +7,12 @@ import time
 # Load environment variables for API keys
 # load_dotenv()
 
-
 api_key_1 = st.secrets["api_key_1"]
 api_key_2 = st.secrets["api_key_2"]
 
 # Initialize the OpenAI clients
-openai.api_key = api_key_1
-client1 = openai.ChatCompletion.create
-
-openai.api_key = api_key_2
-client2 = openai.ChatCompletion.create
+client1 = OpenAI(api_key = api_key_1)
+client2 = OpenAI(api_key = api_key_2)
 
 # Function to manage the conversation between two bots
 def conversation(input_text, original_context):
@@ -27,25 +23,27 @@ def conversation(input_text, original_context):
 
     # For Bot (Pro stance)
     openai.api_key = api_key_1
-    bot_1_response = client1(
+    bot_1_response = client1.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are a debate bot. Your role is to take the given topic and take the Pro stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
-            {"role": "user", "content": message}
+            {"role": "system", "content":"You are a debate bot. Your role is to take the given topic and take the Pro stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
+            {"role": "assistant", "content": message}
         ],
         presence_penalty=0.5,
+
     )
 
     # Against Bot (Con stance)
     openai.api_key = api_key_2
     message = original_context + bot_1_response["choices"][0]["message"]["content"]
-    bot_2_response = client2(
+    bot_2_response = client2.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "You are a debate bot. Your role is to take the given topic and take the Con (or against) stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
+            {"role": "system", "content":"You are a debate bot. Your role is to take the given topic and take the Con (or against) stance. Your first response should be your own thoughts, and each subsequent response should be in direct response to the other party. Keep replies to 2 sentences. Be a little mean."},
             {"role": "user", "content": message}
         ],
         presence_penalty=0.5,
+
     )
 
     return bot_1_response["choices"][0]["message"]["content"], bot_2_response["choices"][0]["message"]["content"]
