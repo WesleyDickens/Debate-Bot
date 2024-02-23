@@ -7,8 +7,9 @@ import time
 # Load environment variables for API keys
 # load_dotenv()
 
-# api_key_1 = os.getenv('OPENAI_API_KEY_1')
-# api_key_2 = os.getenv('OPENAI_API_KEY_2')
+
+api_key_1 = st.secrets["api_key_1"]
+api_key_2 = st.secrets["api_key_2"]
 
 # Initialize the OpenAI clients
 openai.api_key = api_key_1
