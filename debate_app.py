@@ -40,7 +40,7 @@ def conversation(input_text, original_context,tone):
     return bot_1_response.choices[0].message.content, bot_2_response.choices[0].message.content
 
 # Streamlit UI setup
-st.title('AI Debate Bot')
+st.title('AI Debate Simulator')
 topic = st.text_input('Enter a debate topic:', '')
 
 tone = st.radio(
