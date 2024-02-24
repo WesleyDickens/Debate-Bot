@@ -24,7 +24,6 @@ def conversation(input_text, original_context,tone):
             {"role": "assistant", "content": message}
         ],
         presence_penalty=0.5,
-        stream=True
     )
 
     # Against Bot (Con stance)
@@ -36,7 +35,6 @@ def conversation(input_text, original_context,tone):
             {"role": "user", "content": message}
         ],
         presence_penalty=0.5,
-        stream=True
     )
 
     return bot_1_response.choices[0].message.content, bot_2_response.choices[0].message.content
